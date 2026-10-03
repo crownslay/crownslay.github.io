@@ -601,6 +601,7 @@ section > h2 {
   box-shadow: 0 8px 30px rgba(0, 0, 0, .14), inset 0 1px 0 var(--glass-line);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   backdrop-filter: blur(18px) saturate(140%);
+  text-decoration: none;
   transition: border-color .2s, transform .2s;
 }
 .cert:hover { border-color: var(--accent); transform: translateY(-2px); }
@@ -926,26 +927,26 @@ footer {
 
 
   <!-- ======================== CERTIFICATIONS ========================
-       To add one: copy a <div class="cert"> block. -->
+       To add one: copy an <a class="cert"> block and change its link. -->
   <section id="certs">
     <h2><span class="grad">Certifications</span></h2>
     <div class="cert-grid">
 
-      <div class="cert">
+      <a class="cert" href="https://learn.microsoft.com/api/credentials/share/en-us/ZafirIkram-1085/767DA30CCF74584B?sharingId=AEA63F589AC09684" target="_blank" rel="noopener">
         <svg class="icon"><use href="#i-grid"/></svg>
         <div>
           <div class="cert-t">Microsoft 365 Fundamentals</div>
           <div class="cert-s">MS-900 · Microsoft</div>
         </div>
-      </div>
+      </a>
 
-      <div class="cert">
+      <a class="cert" href="https://learn.microsoft.com/api/credentials/share/en-us/ZafirIkram-1085/1F99D8949A9FA7BE?sharingId=AEA63F589AC09684" target="_blank" rel="noopener">
         <svg class="icon"><use href="#i-cloud"/></svg>
         <div>
           <div class="cert-t">Azure Fundamentals</div>
           <div class="cert-s">AZ-900 · Microsoft</div>
         </div>
-      </div>
+      </a>
 
     </div>
   </section>
