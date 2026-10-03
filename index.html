@@ -626,6 +626,12 @@ input, textarea {
   color: var(--text);
 }
 textarea { min-height: 130px; resize: vertical; }
+form button:disabled { opacity: .6; cursor: default; filter: none; }
+
+.hp { display: none; }      /* hidden spam trap: people never see it, bots fill it in */
+.form-status { margin: 0; font-size: .92rem; color: var(--accent); }
+.form-status:empty { display: none; }
+.form-status.err { color: var(--text); font-weight: 500; }
 
 @media (max-width: 860px) {
   form { max-width: none; margin-top: 0; }
@@ -953,7 +959,8 @@ footer {
 
 
   <!-- ======================== CONTACT ========================
-       The form opens the visitor's email app with the message filled in. -->
+       The form sends the message to your inbox through Web3Forms
+       (set WEB3FORMS_KEY in the script at the bottom). -->
   <section id="contact">
     <h2>Contact</h2>
     <p class="contact-note">Reach me at <a href="mailto:zafir007m@gmail.com">zafir007m@gmail.com</a>, or send a message below.</p>
@@ -961,7 +968,9 @@ footer {
       <label>Name<input name="name" required autocomplete="name"></label>
       <label>Email<input name="email" type="email" required autocomplete="email"></label>
       <label>Message<textarea name="msg" required></textarea></label>
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit">Send message</button>
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
     </form>
   </section>
 
@@ -975,7 +984,8 @@ footer {
      ========================================================================== -->
 <script>
 /* ---------- Settings you may want to change ---------- */
-const EMAIL = "zafir007m@gmail.com";            // where the contact form sends mail
+const EMAIL = "zafir007m@gmail.com";            // shown if a message can't be sent
+const WEB3FORMS_KEY = "370bbe85-9ced-433b-bcae-6acde94444f7"; // free key from web3forms.com (sent to your email)
 
 
 /* ---------- Dark / light theme toggle ---------- */
@@ -1019,13 +1029,48 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") setMenu(fals
 window.addEventListener("resize", () => { if (window.innerWidth > 700) setMenu(false); });
 
 
-/* ---------- Contact form: opens the visitor's email app ---------- */
-document.getElementById("contact-form").addEventListener("submit", e => {
+/* ---------- Contact form: sends the message through Web3Forms ---------- */
+const contactForm = document.getElementById("contact-form");
+const sendBtn = contactForm.querySelector("button[type=submit]");
+const formStatus = document.getElementById("form-status");
+
+function setStatus(text, isError) {
+  formStatus.textContent = text;
+  formStatus.classList.toggle("err", isError);
+}
+
+contactForm.addEventListener("submit", async e => {
   e.preventDefault();
-  const data = new FormData(e.target);
-  const subject = "Portfolio message from " + data.get("name");
-  const body = data.get("msg") + "\n\n" + data.get("name") + " (" + data.get("email") + ")";
-  window.location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  const data = new FormData(contactForm);
+  if (data.get("botcheck")) return;              // a bot filled in the hidden box
+
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Sending…";
+  setStatus("", false);
+
+  try {
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Portfolio message from " + data.get("name"),
+        from_name: "Portfolio site",
+        name: data.get("name"),
+        email: data.get("email"),
+        message: data.get("msg"),
+      }),
+    });
+    const result = await res.json();
+    if (!result.success) throw new Error(result.message);
+    contactForm.reset();
+    setStatus("Thanks! Your message has been sent. I'll get back to you soon.", false);
+  } catch (err) {
+    setStatus("Sorry, the message couldn't be sent. Please email me at " + EMAIL + ".", true);
+  } finally {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Send message";
+  }
 });
 
 
