@@ -524,6 +524,12 @@ section > h2 {
 .card:hover { border-color: var(--accent); transform: translateY(-2px); }
 .card h3 { margin-bottom: 8px; font-size: 1.3rem; }
 .card p  { max-width: 60ch; margin: 0 0 16px; color: var(--muted); }
+.card .xp-list { margin: 0 0 16px; }
+.proj > .card:last-child:nth-child(odd) {   /* odd one out: one column wide, centered */
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc((100% - 24px) / 2);           /* same width as a single column (24px = grid gap) */
+}
 
 .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .tags li {
@@ -537,6 +543,7 @@ section > h2 {
 @media (max-width: 860px) {
   .proj { grid-template-columns: 1fr; }
   .card { padding: 22px; }
+  .proj > .card:last-child:nth-child(odd) { width: auto; justify-self: stretch; }
 }
 
 
@@ -861,6 +868,16 @@ footer {
         <h3>Automated Parking Reimbursement Portal</h3>
         <p>An end-to-end web app for NEXT that handles parking claims for employees, managers and auditors. It has role-based views (claim submission, manager workspace with receipt checks, auditor dashboard with search and filters), spreadsheet-driven access control, mobile date validation, and scheduled email digests and monthly payroll summaries.</p>
         <ul class="tags"><li>Google Apps Script</li><li>JavaScript</li><li>HTML5</li><li>CSS3</li></ul>
+      </div>
+
+      <div class="card">
+        <h3>Automated User Account Lifecycle Management</h3>
+        <ul class="xp-list">
+          <li>Scripted full-lifecycle IAM operations across Hybrid Active Directory, Entra ID, and Microsoft 365, standardizing RBAC roles and license provisioning.</li>
+          <li>Reduced average account provisioning and deprovisioning duration by 80% (from 25 minutes down to 5 minutes per user).</li>
+          <li>Streamlined high-volume security offboardings, allowing rapid session revocation and deprovisioning for up to 200 accounts in a single batch.</li>
+        </ul>
+        <ul class="tags"><li>PowerShell</li><li>Active Directory</li><li>Entra ID</li><li>Microsoft 365</li></ul>
       </div>
 
     </div>
